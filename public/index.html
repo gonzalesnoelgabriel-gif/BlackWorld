@@ -92,6 +92,7 @@
 
     .hero-text {
       max-width: 600px;
+      min-width: 0;
     }
 
     .badge {
@@ -151,6 +152,16 @@
         linear-gradient(#4a87bd 0%, #8ac8ed 58%, #5d9c4b 58%, #37662c 100%);
       box-shadow: 0 30px 80px rgba(0,0,0,.4);
       border: 1px solid #364351;
+    }
+
+    .hero-image {
+      display: block;
+      width: 100%;
+      max-width: 600px;
+      height: auto;
+      aspect-ratio: 6 / 5;
+      object-fit: cover;
+      border-radius: 20px;
     }
 
     .sun {
@@ -342,6 +353,7 @@
     }
 
     .feature {
+      min-width: 0;
       padding: 30px;
       background: #12161b;
       border: 1px solid #252c35;
@@ -381,6 +393,8 @@
     .modal-box {
       width: 100%;
       max-width: 420px;
+      max-height: calc(100dvh - 40px);
+      overflow-y: auto;
       background: #15191f;
       border: 1px solid #303943;
       border-radius: 15px;
@@ -464,6 +478,7 @@
     input {
       width: 100%;
       padding: 13px;
+      font-size: 16px;
       border: 1px solid #343c46;
       background: #0d1014;
       color: white;
@@ -544,22 +559,131 @@
     }
 
     /* RESPONSIVE */
-    @media (max-width: 800px) {
+    @media (max-width: 900px) {
       .hero {
         grid-template-columns: 1fr;
-        padding-top: 45px;
+        min-height: auto;
+        gap: 32px;
+        padding: 52px 6%;
       }
 
-      .scene {
-        height: 350px;
+      .hero-text {
+        max-width: 680px;
+      }
+
+      .hero-image {
+        max-width: 680px;
       }
 
       .feature-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       h1 {
         letter-spacing: -2px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      nav {
+        height: 62px;
+        padding: 0 5%;
+      }
+
+      .logo {
+        gap: 9px;
+        font-size: 19px;
+      }
+
+      .logo-box {
+        width: 31px;
+        height: 31px;
+      }
+
+      .logo-box::after {
+        top: 8px;
+        left: 8px;
+      }
+
+      nav button {
+        padding: 10px 14px;
+      }
+
+      .hero {
+        gap: 26px;
+        padding: 42px 5%;
+      }
+
+      .hero-text p {
+        font-size: 16px;
+      }
+
+      .claim-btn {
+        width: 100%;
+        padding: 15px 18px;
+      }
+
+      .hero-image {
+        border-radius: 14px;
+      }
+
+      .reward-section,
+      .features {
+        padding: 52px 5%;
+      }
+
+      .reward-section h2,
+      .features h2 {
+        font-size: 30px;
+      }
+
+      .reward-section > p {
+        line-height: 1.6;
+      }
+
+      .reward-card {
+        padding: 30px 22px;
+      }
+
+      .amount {
+        font-size: 44px;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .feature {
+        padding: 24px;
+      }
+
+      .modal {
+        padding: 12px;
+      }
+
+      .modal-box {
+        max-height: calc(100dvh - 24px);
+        padding: 30px 22px;
+      }
+
+      .modal-box h2 {
+        font-size: 26px;
+      }
+
+      footer {
+        padding: 28px 5%;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .modal-box {
+        padding: 28px 17px;
+      }
+
+      .tabs .tab {
+        padding: 9px 5px;
+        font-size: 13px;
       }
     }
   </style>
@@ -629,7 +753,7 @@
 
       </div> -->
 
-      <img src="roblox.jpg" style="border-radius: 20px;" width="600" height="500" alt="BlockWorld demo scene">
+      <img class="hero-image" src="roblox.jpg" alt="BlockWorld demo scene">
 
     </section>
 
@@ -646,7 +770,7 @@
       <div class="reward-card">
 
         <!-- <div class="coin">C</div> -->
-         <img src="robux.png" width="100" height="" alt="demo coins">
+         <img src="robux.png" width="100" alt="demo coins">
 
         <div class="amount">1,000</div>
 
