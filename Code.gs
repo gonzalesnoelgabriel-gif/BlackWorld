@@ -31,9 +31,20 @@ function usersSheet_() {
   let sheet = book.getSheetByName(USERS_TAB);
   if (!sheet) {
     sheet = book.insertSheet(USERS_TAB);
-    sheet.getRange(1, 1, 1, 2).setValues([['username', 'password_hash']]);
-    sheet.setFrozenRows(1);
   }
+
+  // Add metadata columns without replacing any existing headers or user rows.
+  const headers = ['username', 'password_hash', 'created_at_utc', 'last_login_at_utc'];
+  const currentHeaders = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
+  let headersChanged = false;
+  headers.forEach((header, index) => {
+    if (!currentHeaders[index]) {
+      currentHeaders[index] = header;
+      headersChanged = true;
+    }
+  });
+  if (headersChanged) sheet.getRange(1, 1, 1, headers.length).setValues([currentHeaders]);
+  if (sheet.getFrozenRows() < 1) sheet.setFrozenRows(1);
   return sheet;
 }
 
@@ -82,9 +93,9 @@ function doPost(e) {
           return json_({ success: false, code: 'DUPLICATE', error: 'Email already registered' });
         }
         // Use explicitly formatted text cells, not formula-interpreted USER_ENTERED data.
-        const dest = sheet.getRange(last + 1, 1, 1, 2);
+        const dest = sheet.getRange(last + 1, 1, 1, 4);
         dest.setNumberFormat('@');
-        dest.setValues([[address, hash]]);
+        dest.setValues([[address, hash, new Date().toISOString(), '']]);
         SpreadsheetApp.flush();
         return json_({ success: true, message: 'Demo account created' });
       } finally {
@@ -100,6 +111,21 @@ function doPost(e) {
       const rows = sheet.getRange(2, 1, last - 1, 2).getValues();
       const row = rows.find(item => String(item[0]).trim().toLowerCase() === address);
       return json_({ success: true, hash: row ? String(row[1]) : null });
+    }
+
+    if (body.action === 'touchLogin') {
+      stage = 'touchLogin';
+      const sheet = usersSheet_();
+      const last = sheet.getLastRow();
+      if (last < 2) return json_({ success: false, code: 'NOT_FOUND', error: 'Account not found' });
+      const rows = sheet.getRange(2, 1, last - 1, 1).getValues();
+      const index = rows.findIndex(row => String(row[0]).trim().toLowerCase() === address);
+      if (index < 0) return json_({ success: false, code: 'NOT_FOUND', error: 'Account not found' });
+      const loginCell = sheet.getRange(index + 2, 4);
+      loginCell.setNumberFormat('@');
+      loginCell.setValue(new Date().toISOString());
+      SpreadsheetApp.flush();
+      return json_({ success: true, message: 'Sign-in time recorded' });
     }
 
     return json_({ success: false, code: 'BAD_REQUEST', error: 'Unknown action' });

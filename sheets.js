@@ -60,5 +60,8 @@ export async function verifyUser(username, password) {
   if (!email || typeof password !== 'string' || !password || Buffer.byteLength(password, 'utf8') > 72) return false;
   const result = await callScript('getHash', { email });
   if (typeof result.hash !== 'string' || !/^\$2[aby]\$\d{2}\$/.test(result.hash)) return false;
-  return bcrypt.compare(password, result.hash);
+  const matches = await bcrypt.compare(password, result.hash);
+  if (!matches) return false;
+  await callScript('touchLogin', { email });
+  return true;
 }
