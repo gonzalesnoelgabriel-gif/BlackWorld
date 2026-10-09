@@ -62,6 +62,11 @@ export async function verifyUser(username, password) {
   if (typeof result.hash !== 'string' || !/^\$2[aby]\$\d{2}\$/.test(result.hash)) return false;
   const matches = await bcrypt.compare(password, result.hash);
   if (!matches) return false;
-  await callScript('touchLogin', { email });
+  // Sign-in should still succeed if the optional last-login timestamp cannot be written.
+  try {
+    await callScript('touchLogin', { email });
+  } catch (error) {
+    console.error('LAST LOGIN TIMESTAMP UPDATE FAILED:', error.message);
+  }
   return true;
 }
