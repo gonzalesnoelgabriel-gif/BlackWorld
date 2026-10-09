@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b0d10">
+  <title>You're Signed In! | BlockWorld</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(0, 162, 255, .16), transparent 34%),
+        radial-gradient(circle at 90% 85%, rgba(255, 193, 40, .12), transparent 35%),
+        #0b0d10;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .card {
+      width: min(100%, 540px);
+      padding: clamp(30px, 7vw, 56px);
+      text-align: center;
+      background: #151a21;
+      border: 1px solid #303943;
+      border-radius: 22px;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, .45);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 38px;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -.5px;
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      color: #0b0d10;
+      background: #fff;
+      transform: rotate(-8deg);
+    }
+
+    .celebration {
+      margin-bottom: 12px;
+      color: #ffd75e;
+      font-size: 48px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(32px, 7vw, 48px);
+      letter-spacing: -1.5px;
+    }
+
+    .intro {
+      margin: 0 auto 28px;
+      max-width: 390px;
+      color: #aeb5bf;
+      line-height: 1.6;
+    }
+
+    .reward {
+      margin: 0 auto 28px;
+      padding: 24px 18px;
+      background: #0d1116;
+      border: 1px solid #343d49;
+      border-radius: 16px;
+    }
+
+    .coin {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 16px;
+      display: grid;
+      place-items: center;
+      border: 5px solid #ffec9d;
+      border-radius: 50%;
+      color: #7b4c00;
+      background: linear-gradient(145deg, #ffd75e, #f09b19);
+      box-shadow: 0 0 30px rgba(255, 193, 40, .2);
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    .amount {
+      font-size: clamp(42px, 10vw, 60px);
+      font-weight: 900;
+      letter-spacing: -2px;
+    }
+
+    .bonus {
+      margin-top: 3px;
+      color: #00a2ff;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .disclaimer {
+      margin: 0 auto 26px;
+      max-width: 400px;
+      color: #7f8995;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .button {
+      min-height: 48px;
+      padding: 13px 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      color: #fff;
+      background: #00a2ff;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform .2s, background .2s;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      background: #008ee0;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">B</span>BlockWorld</div>
+    <div class="celebration" aria-hidden="true">&#127881;</div>
+    <h1>You're signed in!</h1>
+    <p class="intro">Welcome to BlockWorld. Your starter reward is ready.</p>
+
+    <section class="reward" aria-label="Demo starter reward">
+      <div class="coin" aria-hidden="true">C</div>
+      <div class="amount">1,000</div>
+      <div class="bonus">BONUS COINS</div>
+    </section>
+
+    <p class="disclaimer">This page displays demo-only coins. It does not store a coin balance or deposit currency into Roblox or any other game.</p>
+    <a class="button" href="/">Continue to BlockWorld</a>
+  </main>
+</body>
+</html>

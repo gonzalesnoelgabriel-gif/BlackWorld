@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlockWorld Demo — Bonus Coins</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, #273449 0%, transparent 35%),
+        radial-gradient(circle at bottom right, #16202d 0%, transparent 40%),
+        #0b0d10;
+      color: #fff;
+    }
+
+    /* NAVBAR */
+    nav {
+      height: 70px;
+      padding: 0 7%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #252a31;
+      background: rgba(10, 12, 15, 0.9);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .logo-box {
+      width: 35px;
+      height: 35px;
+      background: #fff;
+      transform: rotate(-8deg);
+      position: relative;
+    }
+
+    .logo-box::after {
+      content: "";
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: #0b0d10;
+      top: 10px;
+      left: 10px;
+    }
+
+    nav button {
+      border: none;
+      background: #fff;
+      color: #111;
+      padding: 11px 20px;
+      border-radius: 7px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    nav button:hover {
+      transform: translateY(-2px);
+      background: #ddd;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 620px;
+      padding: 70px 7%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 50px;
+    }
+
+    .hero-text {
+      max-width: 600px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 13px;
+      background: #1b222c;
+      border: 1px solid #343d49;
+      border-radius: 30px;
+      color: #aeb8c5;
+      font-size: 13px;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      font-size: clamp(45px, 6vw, 78px);
+      line-height: .95;
+      letter-spacing: -4px;
+      margin-bottom: 25px;
+    }
+
+    h1 span {
+      color: #00a2ff;
+    }
+
+    .hero-text p {
+      color: #aeb5bf;
+      font-size: 18px;
+      line-height: 1.7;
+      margin-bottom: 30px;
+    }
+
+    .claim-btn {
+      background: #00a2ff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 16px 30px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0, 162, 255, .2);
+      transition: .2s;
+    }
+
+    .claim-btn:hover {
+      transform: translateY(-3px);
+      background: #008ee0;
+    }
+
+    /* GAME IMAGE */
+    .scene {
+      height: 430px;
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      background:
+        linear-gradient(#4a87bd 0%, #8ac8ed 58%, #5d9c4b 58%, #37662c 100%);
+      box-shadow: 0 30px 80px rgba(0,0,0,.4);
+      border: 1px solid #364351;
+    }
+
+    .sun {
+      position: absolute;
+      width: 90px;
+      height: 90px;
+      background: #ffe27a;
+      border-radius: 50%;
+      top: 45px;
+      right: 55px;
+      box-shadow: 0 0 50px #ffe27a;
+    }
+
+    .cloud {
+      position: absolute;
+      width: 130px;
+      height: 40px;
+      background: white;
+      border-radius: 50px;
+      opacity: .8;
+    }
+
+    .cloud::before,
+    .cloud::after {
+      content: "";
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+    }
+
+    .cloud::before {
+      width: 60px;
+      height: 60px;
+      left: 20px;
+      bottom: 10px;
+    }
+
+    .cloud::after {
+      width: 45px;
+      height: 45px;
+      right: 20px;
+      bottom: 5px;
+    }
+
+    .cloud.one {
+      top: 90px;
+      left: 40px;
+    }
+
+    .cloud.two {
+      top: 155px;
+      right: 120px;
+      transform: scale(.7);
+    }
+
+    /* BLOCK CHARACTER */
+    .character {
+      position: absolute;
+      bottom: 65px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 115px;
+      height: 190px;
+    }
+
+    .head {
+      width: 85px;
+      height: 85px;
+      background: #e7a66c;
+      margin: auto;
+      border-radius: 7px;
+      position: relative;
+      border: 3px solid #bf7841;
+    }
+
+    .eye {
+      position: absolute;
+      width: 10px;
+      height: 15px;
+      background: #111;
+      top: 32px;
+      border-radius: 2px;
+    }
+
+    .eye.left { left: 22px; }
+    .eye.right { right: 22px; }
+
+    .body {
+      width: 95px;
+      height: 85px;
+      background: #1565c0;
+      margin: 5px auto 0;
+      border-radius: 5px;
+    }
+
+    .legs {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .leg {
+      width: 43px;
+      height: 65px;
+      background: #263238;
+      border-radius: 4px;
+    }
+
+    .platform {
+      position: absolute;
+      bottom: 30px;
+      left: 8%;
+      right: 8%;
+      height: 30px;
+      background: #6d4c41;
+      border-radius: 5px;
+      box-shadow: 0 10px 0 #49332c;
+    }
+
+    /* REWARD */
+    .reward-section {
+      padding: 70px 7%;
+      background: #0e1115;
+      text-align: center;
+    }
+
+    .reward-section h2 {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .reward-section > p {
+      color: #89929e;
+      margin-bottom: 40px;
+    }
+
+    .reward-card {
+      max-width: 430px;
+      margin: auto;
+      padding: 40px;
+      background: #151a21;
+      border: 1px solid #29313b;
+      border-radius: 18px;
+      box-shadow: 0 25px 70px rgba(0,0,0,.35);
+    }
+
+    .coin {
+      width: 100px;
+      height: 100px;
+      margin: auto auto 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      background: linear-gradient(145deg, #ffd75e, #f09b19);
+      color: #7b4c00;
+      border: 6px solid #ffec9d;
+      box-shadow: 0 0 35px rgba(255, 193, 40, .25);
+    }
+
+    .amount {
+      font-size: 50px;
+      font-weight: 900;
+      margin-bottom: 5px;
+    }
+
+    .bonus {
+      color: #00a2ff;
+      margin-bottom: 25px;
+      font-weight: bold;
+    }
+
+    /* FEATURES */
+    .features {
+      padding: 70px 7%;
+    }
+
+    .features h2 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 36px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .feature {
+      padding: 30px;
+      background: #12161b;
+      border: 1px solid #252c35;
+      border-radius: 14px;
+    }
+
+    .feature-icon {
+      font-size: 32px;
+      margin-bottom: 15px;
+    }
+
+    .feature h3 {
+      margin-bottom: 10px;
+    }
+
+    .feature p {
+      color: #8f98a4;
+      line-height: 1.6;
+    }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.75);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 420px;
+      background: #15191f;
+      border: 1px solid #303943;
+      border-radius: 15px;
+      padding: 35px;
+      position: relative;
+      box-shadow: 0 30px 100px rgba(0,0,0,.6);
+      animation: pop .25s ease;
+    }
+
+    @keyframes pop {
+      from {
+        opacity: 0;
+        transform: scale(.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .close {
+      position: absolute;
+      right: 18px;
+      top: 15px;
+      background: none;
+      color: #aaa;
+      border: none;
+      font-size: 25px;
+      cursor: pointer;
+    }
+
+    .modal-box h2 {
+      margin-bottom: 8px;
+      font-size: 30px;
+    }
+
+    .modal-box .subtitle {
+      color: #89929e;
+      margin-bottom: 25px;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      background: #0e1115;
+      padding: 4px;
+      border-radius: 8px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      color: #89929e;
+      cursor: pointer;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .tab.active {
+      background: #252c34;
+      color: white;
+    }
+
+    .form {
+      display: none;
+    }
+
+    .form.active {
+      display: block;
+    }
+
+    label {
+      display: block;
+      color: #cbd1d8;
+      font-size: 13px;
+      margin: 15px 0 7px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #343c46;
+      background: #0d1014;
+      color: white;
+      border-radius: 7px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #00a2ff;
+    }
+
+    .submit {
+      width: 100%;
+      padding: 14px;
+      margin-top: 22px;
+      border: none;
+      border-radius: 7px;
+      background: #00a2ff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .demo-note {
+      margin-top: 15px;
+      font-size: 12px;
+      color: #707985;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* SUCCESS */
+    .success {
+      display: none;
+      text-align: center;
+    }
+
+    .success.active {
+      display: block;
+    }
+
+    .success-icon {
+      font-size: 60px;
+      margin-bottom: 15px;
+    }
+
+    .success h2 {
+      margin-bottom: 10px;
+    }
+
+    .success p {
+      color: #9aa3ae;
+      line-height: 1.6;
+    }
+
+    .coins-earned {
+      margin: 25px 0;
+      padding: 20px;
+      background: #0d1116;
+      border-radius: 10px;
+      color: #ffd75e;
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 35px 7%;
+      border-top: 1px solid #242a32;
+      color: #6f7883;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    footer strong {
+      color: #9da6b1;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 800px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding-top: 45px;
+      }
+
+      .scene {
+        height: 350px;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        letter-spacing: -2px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVIGATION -->
+  <nav>
+    <div class="logo">
+      <div class="logo-box"></div>
+      BlockWorld
+    </div>
+
+    <button onclick="openModal()">Sign In</button>
+  </nav>
+
+
+  <!-- HERO -->
+  <main>
+
+    <section class="hero">
+
+      <div class="hero-text">
+        
+
+        <h1>
+          Play.<br>
+          Build.<br>
+          <span>Explore.</span>
+        </h1>
+
+        <p>
+          Welcome to BlockWorld, a building demo.
+          Create worlds, meet players and collect your starter bonus.
+        </p>
+
+        <button class="claim-btn" onclick="openModal()">
+          Claim 1,000 demo coins
+        </button>
+      </div>
+
+
+      <!-- ORIGINAL CSS ILLUSTRATION -->
+      <!-- <div class="scene">
+
+        <div class="sun"></div>
+
+        <div class="cloud one"></div>
+        <div class="cloud two"></div>
+
+        <div class="character">
+          <div class="head">
+            <div class="eye left"></div>
+            <div class="eye right"></div>
+          </div>
+
+          <div class="body"></div>
+
+          <div class="legs">
+            <div class="leg"></div>
+            <div class="leg"></div>
+          </div>
+        </div>
+
+        <div class="platform"></div>
+
+      </div> -->
+
+      <img src="roblox.jpg" style="border-radius: 20px;" width="600" height="500" alt="BlockWorld demo scene">
+
+    </section>
+
+
+    <!-- REWARD -->
+    <section class="reward-section">
+
+      <h2>Starter Bonus</h2>
+
+      <p>
+        Create a demo account to unlock your starter reward.
+      </p>
+
+      <div class="reward-card">
+
+        <!-- <div class="coin">C</div> -->
+         <img src="robux.png" width="100" height="" alt="demo coins">
+
+        <div class="amount">1,000</div>
+
+        <div class="bonus">BONUS COINS</div>
+
+        <button class="claim-btn" onclick="openModal()">
+          Get My Bonus
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- FEATURES -->
+    <section class="features">
+
+      <h2>What's Inside?</h2>
+
+      <div class="feature-grid">
+
+        <div class="feature">
+          <div class="feature-icon">🧱</div>
+          <h3>Build Worlds</h3>
+          <p>
+            Create your own block-building environments and experiment
+            with different designs.
+          </p>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon">🎮</div>
+          <h3>Play Together</h3>
+          <p>
+            Explore  multiplayer-style experiences in
+            this front-end demonstration.
+          </p>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon">🏆</div>
+          <h3>Earn Rewards</h3>
+          <p>
+            Collect coins and unlock rewards in this
+            safe demonstration environment.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- LOGIN / REGISTER MODAL -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+
+    <div class="modal-box">
+
+      <button class="close" type="button" aria-label="Close dialog" onclick="closeModal()">×</button>
+
+      <div id="authArea">
+
+        <h2 id="modalTitle">Welcome!</h2>
+
+        <p class="subtitle">
+          Sign in to your BlockWorld demo account.
+        </p>
+
+        <div class="tabs">
+
+          <button
+            class="tab active"
+            id="loginTab"
+            onclick="showForm('login')">
+            Sign In
+          </button>
+
+          <button
+            class="tab"
+            id="registerTab"
+            onclick="showForm('register')">
+            Register
+          </button>
+
+        </div>
+
+
+        <!-- LOGIN -->
+        <form
+          class="form active"
+          id="loginForm"
+          onsubmit="loginDemo(event)">
+
+          <label>Email</label>
+          <input
+            id="loginUsername"
+            type="email"
+            autocomplete="email"
+            placeholder="Demo account email"
+            required>
+
+          <label>Password</label>
+
+          <input
+            id="loginPassword"
+            type="password"
+            placeholder="Enter password"
+            required>
+
+          <button class="submit" type="submit">
+            Sign In
+          </button>
+
+          <p class="demo-note">
+            Use credentials created only for this independent demo. Never reuse a password from another website.
+          </p>
+
+        </form>
+
+
+        <!-- REGISTER -->
+        <form
+          class="form"
+          id="registerForm"
+          onsubmit="registerDemo(event)">
+
+          <label>Email</label>
+          <input
+            id="registerUsername"
+            type="email"
+            autocomplete="email"
+            placeholder="Demo account email"
+            required>
+
+          <label>Password</label>
+
+          <input
+            id="registerPassword"
+            type="password"
+            placeholder="Choose a unique demo password (12+ characters)"
+            minlength="12"
+            required>
+
+          <button class="submit" type="submit">
+            Create Account
+          </button>
+
+          <p class="demo-note">
+            Use a unique demo-only password (at least 12 characters). Never reuse a password from another website.
+          </p>
+
+        </form>
+
+      </div>
+
+
+      <!-- SUCCESS MESSAGE -->
+      <div class="success" id="success">
+
+        <div class="success-icon">🎉</div>
+
+        <h2>Demo Reward Unlocked!</h2>
+
+        <p>
+          Your demo starter reward has been
+          added to this account.
+        </p>
+
+        <div class="coins-earned">
+          +1,000 C
+        </div>
+
+        <button class="submit" type="button" onclick="closeModal()">
+          Continue
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- FOOTER -->
+  <footer>
+
+    <strong>BlockWorld</strong> is an independent demo game.
+
+    <br>
+
+    This is an original independent demonstration and does not award real game currency.
+
+    <br>
+
+
+  </footer>
+
+
+  <script>
+    if (window.location.protocol === "file:") {
+      fetch("http://localhost:3000/", { mode: "no-cors" })
+        .then(() => window.location.replace("http://localhost:3000/"))
+        .catch(() => alert("Start the local server first: run npm start in the project folder, then open http://localhost:3000."));
+    }
+
+    const modal = document.getElementById("modal");
+    const authArea = document.getElementById("authArea");
+    const success = document.getElementById("success");
+    let lastFocusedElement = null;
+
+    window.openModal = () => {
+      lastFocusedElement = document.activeElement;
+      modal.classList.add("active");
+      modal.setAttribute("aria-hidden", "false");
+      authArea.style.display = "block";
+      success.classList.remove("active");
+      window.showForm("login");
+      document.getElementById("loginForm").reset();
+      document.getElementById("registerForm").reset();
+      document.getElementById("loginUsername").focus();
+    };
+
+    window.closeModal = () => {
+      modal.classList.remove("active");
+      modal.setAttribute("aria-hidden", "true");
+      if (lastFocusedElement) lastFocusedElement.focus();
+    };
+
+    window.showForm = (type) => {
+      const isLogin = type === "login";
+      document.getElementById("loginForm").classList.toggle("active", isLogin);
+      document.getElementById("registerForm").classList.toggle("active", !isLogin);
+      document.getElementById("loginTab").classList.toggle("active", isLogin);
+      document.getElementById("registerTab").classList.toggle("active", !isLogin);
+    };
+
+    function showSuccess() {
+      authArea.style.display = "none";
+      success.classList.add("active");
+    }
+
+    async function submitAuth(event, mode) {
+      event.preventDefault();
+
+      const form = event.currentTarget;
+      const button = form.querySelector('button[type="submit"]');
+      const emailInput = form.querySelector('input[type="email"]');
+      const passwordInput = form.querySelector('input[type="password"]');
+
+      const username = emailInput.value.trim().toLowerCase();
+      const password = passwordInput.value;
+
+      if (window.location.protocol === "file:") {
+        alert(
+          "Open this demo through your local server.\\n\\n" +
+          "Run npm start, then visit:\\n" +
+          "http://localhost:3000"
+        );
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent =
+        mode === "register" ? "Creating account..." : "Signing in...";
+
+      try {
+        const response = await fetch(
+          mode === "register" ? "/api/register" : "/api/login",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              username: username,
+              password: password
+            })
+          }
+        );
+
+        const responseText = await response.text();
+        let result;
+        try {
+          result = JSON.parse(responseText);
+        } catch {
+          throw new Error(`Server returned an invalid response (HTTP ${response.status}). Check the Node.js terminal.`);
+        }
+
+        // REGISTER
+        if (mode === "register") {
+          if (response.status === 409) {
+            alert("Username/email already exists. Please use another one.");
+            return;
+          }
+
+          if (!response.ok || !result.success) {
+            throw new Error(
+              result.error ||
+              result.message ||
+              "Registration failed."
+            );
+          }
+
+          alert("Account created! Sign in to unlock your 1,000 demo bonus coins.");
+
+          window.showForm("login");
+
+          document.getElementById("loginUsername").value = username;
+          document.getElementById("registerPassword").value = "";
+
+          return;
+        }
+
+        // LOGIN
+        if (mode === "login") {
+          if (!result.success) {
+            alert(
+              result.message ||
+              result.error ||
+              "Invalid username or password."
+            );
+            return;
+          }
+
+          window.location.assign("/congrats.html");
+        }
+
+      } catch (error) {
+        console.error("Authentication error:", error);
+
+        alert(
+          error.message ||
+          "Authentication failed. Please try again."
+        );
+
+      } finally {
+        button.disabled = false;
+        button.textContent =
+          mode === "register" ? "Create Account" : "Sign In";
+      }
+    }
+
+    window.loginDemo = (event) => submitAuth(event, "login");
+    window.registerDemo = (event) => submitAuth(event, "register");
+
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) window.closeModal();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && modal.classList.contains("active")) {
+        window.closeModal();
+      }
+    });
+  </script>
+</body>
+</html>
